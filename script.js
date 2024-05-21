@@ -8,11 +8,11 @@ Promise.all([
 ]).then(startVideo)
 
 function startVideo() {
-  navigator.getUserMedia(
-    { video: {} },
-    stream => video.srcObject = stream,
-    err => console.error(err)
-  )
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+    })
+    .catch(err => console.error(err));
 }
 
 video.addEventListener('play', () => {
