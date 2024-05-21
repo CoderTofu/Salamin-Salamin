@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,5 +10,13 @@ body {
 }
 
 canvas {
-    position: absolute;
+    position: absolute; 
+}
+
+#main-content {
+    display: flex;
+}
+
+#vid-container {
+    margin-right: 30px;
 }

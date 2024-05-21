@@ -1,4 +1,34 @@
-const video = document.getElementById('video')
+const videoContainer = document.getElementById('vid-container')
+const video = document.getElementById('video'); // Main video output
+
+const emojiImg = document.getElementById('emoji-img');
+let lastRandom = 0;
+
+const screenshot1 = document.getElementById('ss-1'); 
+const screenshot2 = document.getElementById('ss-2');
+const imgCanvas = document.createElement('canvas'); // placeholder to take video screenshot
+const ctx = imgCanvas.getContext('2d');
+
+imgCanvas.width = 640;
+imgCanvas.height = 480;
+
+function takeScreenshot() {
+  ctx.drawImage(video, 0, 0, imgCanvas.width, imgCanvas.height); // take the screenshot from the vid
+  var dataURI = imgCanvas.toDataURL('image/jpeg');
+
+  // san siya iddisplay
+  screenshot1.src = dataURI;
+}
+
+function changeEmoji() {
+  let randomNumber;
+  do {
+    randomNumber = Math.floor(Math.random() * 5) + 1;
+  } while (lastRandom === randomNumber);
+
+  lastRandom = randomNumber;
+  emojiImg.src = `./emojis/${randomNumber}.png`
+}
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
@@ -13,11 +43,12 @@ function startVideo() {
       video.srcObject = stream;
     })
     .catch(err => console.error(err));
+    changeEmoji()
 }
 
 video.addEventListener('play', () => {
   const canvas = faceapi.createCanvasFromMedia(video)
-  document.body.append(canvas)
+  videoContainer.append(canvas)
   const displaySize = { width: video.width, height: video.height }
   faceapi.matchDimensions(canvas, displaySize)
   setInterval(async () => {
@@ -29,3 +60,12 @@ video.addEventListener('play', () => {
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
   }, 100)
 })
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.addEventListener('keydown', function(event) {
+      if (event.code === 'Space') {
+          takeScreenshot();
+          changeEmoji();
+      }
+  });
+});
